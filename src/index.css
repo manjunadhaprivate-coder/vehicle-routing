@@ -1,0 +1,221 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0B1120;
+    --bg-secondary: #111827;
+    --bg-panel: #172033;
+    --bg-card: #1E293B;
+    --bg-card-hover: #26354A;
+    --quantum: #7C3AED;
+    --quantum-hover: #8B5CF6;
+    --quantum-active: #6D28D9;
+    --tech-blue: #2563EB;
+    --tech-blue-hover: #3B82F6;
+    --traffic-free: #22C55E;
+    --traffic-moderate: #F59E0B;
+    --traffic-heavy: #F97316;
+    --traffic-congested: #EF4444;
+    --route-normal: #64748B;
+    --route-selected: #3B82F6;
+    --route-optimized: #22C55E;
+    --route-quantum: #A855F7;
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+    --border-default: #334155;
+    --border-active: #7C3AED;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #0B1120;
+    color: #F8FAFC;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #111827;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-bg-card border border-border-default rounded-xl p-4 transition-colors duration-200;
+  }
+  .card:hover {
+    background-color: #26354A;
+    border-color: #475569;
+  }
+
+  .btn-primary {
+    @apply bg-quantum hover:bg-quantum-hover active:bg-quantum-active text-white font-semibold
+           px-4 py-2 rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .btn-blue {
+    @apply bg-tech-blue hover:bg-tech-blue-hover text-white font-semibold
+           px-4 py-2 rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .btn-success {
+    @apply bg-green-700 hover:bg-green-600 text-white font-semibold
+           px-4 py-2 rounded-lg transition-all duration-200;
+  }
+
+  .btn-danger {
+    @apply bg-red-700 hover:bg-red-600 text-white font-semibold
+           px-4 py-2 rounded-lg transition-all duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-bg-card border border-slate-600 hover:bg-bg-card-hover text-text-primary font-medium
+           px-4 py-2 rounded-lg transition-all duration-200;
+  }
+
+  .input-field {
+    @apply bg-bg-secondary border border-border-default text-text-primary placeholder-text-muted
+           rounded-lg px-3 py-2 w-full focus:outline-none focus:border-quantum focus:ring-1 focus:ring-quantum
+           transition-colors duration-200;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-text-secondary mb-1;
+  }
+
+  .quantum-badge {
+    @apply inline-flex items-center gap-1 bg-purple-900/30 text-purple-300 border border-purple-700/50
+           text-xs font-semibold px-2 py-0.5 rounded-full;
+  }
+
+  .status-success {
+    @apply inline-flex items-center gap-1 bg-green-900/30 text-green-400 border border-green-700/50
+           text-xs font-semibold px-2 py-0.5 rounded-full;
+  }
+
+  .status-warning {
+    @apply inline-flex items-center gap-1 bg-amber-900/30 text-amber-400 border border-amber-700/50
+           text-xs font-semibold px-2 py-0.5 rounded-full;
+  }
+
+  .status-error {
+    @apply inline-flex items-center gap-1 bg-red-900/30 text-red-400 border border-red-700/50
+           text-xs font-semibold px-2 py-0.5 rounded-full;
+  }
+
+  .status-info {
+    @apply inline-flex items-center gap-1 bg-blue-900/30 text-blue-400 border border-blue-700/50
+           text-xs font-semibold px-2 py-0.5 rounded-full;
+  }
+
+  .page-title {
+    @apply text-2xl font-bold text-text-primary;
+  }
+
+  .page-subtitle {
+    @apply text-text-muted text-sm mt-1;
+  }
+
+  .section-header {
+    @apply text-lg font-semibold text-text-primary mb-4;
+  }
+
+  .table-header {
+    @apply bg-bg-panel border-b border-border-default;
+  }
+
+  .table-row {
+    @apply border-b border-border-default hover:bg-bg-card-hover transition-colors duration-150;
+  }
+
+  .table-cell {
+    @apply px-4 py-3 text-sm text-text-secondary;
+  }
+
+  .glass-card {
+    @apply backdrop-blur-sm bg-white/5 border border-white/10 rounded-xl;
+  }
+
+  .progress-bar {
+    @apply h-2 bg-bg-secondary rounded-full overflow-hidden;
+  }
+  .progress-fill {
+    @apply h-full bg-gradient-to-r from-quantum to-quantum-hover rounded-full transition-all duration-300;
+  }
+}
+
+/* Leaflet map dark theme integration */
+.leaflet-container {
+  background: #172033 !important;
+  border-radius: 0.75rem;
+}
+.leaflet-control-attribution {
+  background: rgba(17, 24, 39, 0.8) !important;
+  color: #94A3B8 !important;
+  font-size: 10px;
+}
+.leaflet-control-zoom a {
+  background-color: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F8FAFC !important;
+}
+.leaflet-control-zoom a:hover {
+  background-color: #26354A !important;
+}
+.leaflet-popup-content-wrapper {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  color: #F8FAFC !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+}
+.leaflet-popup-tip {
+  background: #1E293B !important;
+}
+
+/* Animations */
+@keyframes quantumPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.animate-quantum-pulse {
+  animation: quantumPulse 2s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
