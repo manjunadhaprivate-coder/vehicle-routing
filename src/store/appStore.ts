@@ -5,10 +5,32 @@ import type {
 } from '../types';
 import { sampleVehicles, sampleLocations, defaultSettings } from '../data/sampleData';
 
+// ── Registered-user helpers (stored outside Zustand persist) ──────────────
+const USERS_KEY = 'qvrs-users';
+interface StoredUser { name: string; email: string; pwHash: string; }
+
+/** Minimal deterministic hash — good enough for a client-side prototype. */
+function simpleHash(str: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = (h * 0x01000193) >>> 0;
+  }
+  return h.toString(16);
+}
+function getUsers(): StoredUser[] {
+  try { return JSON.parse(localStorage.getItem(USERS_KEY) ?? '[]'); } catch { return []; }
+}
+function saveUsers(users: StoredUser[]) {
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+
 interface AppState {
   // Auth
   auth: AuthState;
   login: (email: string, password: string) => boolean;
+  /** Returns null on success, or an error string. */
+  register: (name: string, email: string, password: string) => string | null;
   logout: () => void;
 
   // Data
@@ -52,11 +74,24 @@ export const useAppStore = create<AppState>()(
       // ── Auth ──────────────────────────────────────────────────────────
       auth: { isAuthenticated: false },
       login: (email, password) => {
-        if (email === 'demo@sih.com' && password === 'sih2026') {
-          set({ auth: { isAuthenticated: true, user: { email, name: 'SIH Demo User' } } });
+        const normalised = email.trim().toLowerCase();
+        const users = getUsers();
+        const found = users.find(u => u.email === normalised);
+        if (found && found.pwHash === simpleHash(password)) {
+          set({ auth: { isAuthenticated: true, user: { email: found.email, name: found.name } } });
           return true;
         }
         return false;
+      },
+      register: (name, email, password) => {
+        const normalised = email.trim().toLowerCase();
+        const users = getUsers();
+        if (users.find(u => u.email === normalised)) return 'An account with this email already exists.';
+        users.push({ name: name.trim(), email: normalised, pwHash: simpleHash(password) });
+        saveUsers(users);
+        // Auto-login after registration
+        set({ auth: { isAuthenticated: true, user: { email: normalised, name: name.trim() } } });
+        return null;
       },
       logout: () => set({ auth: { isAuthenticated: false } }),
 
