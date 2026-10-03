@@ -219,3 +219,99 @@
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* ── Truck & Road Animation ─────────────────────────────────────────────── */
+
+/* Truck travels from off-screen left → off-screen right */
+@keyframes truck-drive {
+  0%   { transform: translateX(-160px); }
+  100% { transform: translateX(calc(100vw + 60px)); }
+}
+
+/* Wheels rotate */
+@keyframes wheel-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Road centre-dashes scroll right-to-left (parallax) */
+@keyframes road-scroll {
+  from { background-position: 0 center; }
+  to   { background-position: -60px center; }
+}
+
+/* Tiny dust puffs behind rear wheel */
+@keyframes dust-puff {
+  0%   { opacity: 0;   transform: translateX(0)    scale(0.4); }
+  35%  { opacity: 0.55; }
+  100% { opacity: 0;   transform: translateX(-28px) scale(1.4); }
+}
+
+/* Classes toggled by React state */
+.truck-idle    { transform: translateX(-160px); }
+.truck-driving { animation: truck-drive 2.5s linear forwards; }
+
+.wheel-spin-anim {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wheel-spin 0.45s linear infinite;
+}
+
+.road-scroll-anim { animation: road-scroll 0.38s linear infinite; }
+
+.dust-puff-anim {
+  animation: dust-puff 0.55s ease-out infinite;
+}
+
+/* Traffic-theme input focus (yellow/amber) — used on login page only */
+.input-traffic:focus {
+  outline: none;
+  border-color: #F59E0B !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18) !important;
+}
+.input-traffic {
+  border-color: #374151;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Hazard stripe accents on Create Account button */
+.btn-traffic {
+  position: relative;
+  overflow: hidden;
+  background: #F59E0B;
+  color: #0F172A;
+  font-weight: 700;
+  border-radius: 0.5rem;
+  transition: background 0.2s, transform 0.1s;
+}
+.btn-traffic:hover:not(:disabled) { background: #FBBF24; }
+.btn-traffic:active:not(:disabled) { transform: scale(0.98); }
+.btn-traffic:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-traffic::before,
+.btn-traffic::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 22px;
+  height: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 4px,
+    rgba(0,0,0,0.22) 4px,
+    rgba(0,0,0,0.22) 8px
+  );
+  pointer-events: none;
+}
+.btn-traffic::before { left: 0; }
+.btn-traffic::after  { right: 0; }
+
+/* Accessibility: respect user motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .truck-driving,
+  .wheel-spin-anim,
+  .road-scroll-anim,
+  .dust-puff-anim { animation: none !important; }
+  .truck-idle, .truck-driving { transform: none !important; }
+}
