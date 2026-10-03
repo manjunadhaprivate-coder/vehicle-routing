@@ -76,7 +76,7 @@ export default function Locations() {
       {flash && <div className="status-success px-4 py-2.5 rounded-lg text-sm">{flash}</div>}
 
       {showForm && (
-        <div className="card border-quantum/40">
+        <div className="card" style={{ borderColor: 'rgba(245,197,24,0.3)' }}>
           <h3 className="section-header">{editingId ? 'Edit Location' : 'Add Location'}</h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
@@ -136,7 +136,8 @@ export default function Locations() {
             </div>
             <div className="flex items-center gap-2">
               <input type="checkbox" id="isDepot" checked={!!formData.isDepot}
-                onChange={e => setField('isDepot', e.target.checked)} className="w-4 h-4 accent-purple-500" />
+                onChange={e => setField('isDepot', e.target.checked)}
+                className="w-4 h-4" style={{ accentColor: '#F5C518' }} />
               <label htmlFor="isDepot" className="label mb-0">This is the Depot</label>
             </div>
             <div className="sm:col-span-2 lg:col-span-3 flex gap-3 justify-end">
@@ -147,19 +148,22 @@ export default function Locations() {
         </div>
       )}
 
-      {/* Depot */}
+      {/* Depot card */}
       {depot && (
-        <div className="card border-purple-700/40 bg-purple-900/10">
+        <div className="card" style={{ borderColor: 'rgba(245,197,24,0.25)', background: 'rgba(245,197,24,0.04)' }}>
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-quantum/30 flex items-center justify-center">
-              <MapPin className="w-4 h-4 text-quantum-hover" />
+            <div style={{ width: 32, height: 32, borderRadius: '50%',
+              background: 'rgba(245,197,24,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <MapPin className="w-4 h-4" style={{ color: '#F5C518' }} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-quantum-hover">{depot.name}</p>
-              <p className="text-xs text-text-muted">{depot.address} · {depot.lat.toFixed(4)}, {depot.lng.toFixed(4)}</p>
+              <p className="font-semibold" style={{ color: '#F5C518' }}>{depot.name}</p>
+              <p className="text-xs" style={{ color: '#3A5570' }}>{depot.address} · {depot.lat.toFixed(4)}, {depot.lng.toFixed(4)}</p>
             </div>
             <button onClick={() => handleEdit(depot)}
-              className="p-1.5 rounded hover:bg-blue-900/30 text-text-muted hover:text-blue-400 transition-colors">
+              className="p-1.5 rounded transition-colors" style={{ color: '#3A5570' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(29,111,235,0.15)'; (e.currentTarget as HTMLButtonElement).style.color = '#4B8FF5'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.color = '#3A5570'; }}>
               <Edit2 className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -168,9 +172,9 @@ export default function Locations() {
 
       {deliveries.length === 0 ? (
         <div className="card flex flex-col items-center justify-center py-16 text-center">
-          <MapPin className="w-12 h-12 text-text-muted mb-4" />
-          <p className="text-text-secondary font-semibold">No delivery locations</p>
-          <p className="text-text-muted text-sm mt-1">Add locations or load the demo dataset.</p>
+          <MapPin className="w-12 h-12 mb-4" style={{ color: '#3A5570' }} />
+          <p className="font-semibold" style={{ color: '#7FA0C0' }}>No delivery locations</p>
+          <p className="text-sm mt-1" style={{ color: '#3A5570' }}>Add locations or load the demo dataset.</p>
         </div>
       ) : (
         <div className="card p-0 overflow-hidden">
@@ -178,32 +182,37 @@ export default function Locations() {
             <table className="w-full">
               <thead>
                 <tr className="table-header">
-                  {['ID', 'Name', 'Coordinates', 'Demand', 'Priority', 'Time Window', 'Actions'].map(h => (
-                    <th key={h} className="table-cell text-left text-xs font-semibold text-text-muted uppercase tracking-wide">{h}</th>
+                  {['ID','Name','Coordinates','Demand','Priority','Time Window','Actions'].map(h => (
+                    <th key={h} className="table-cell text-left text-xs font-semibold uppercase tracking-wide"
+                      style={{ color: '#3A5570' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {deliveries.map(loc => (
                   <tr key={loc.id} className="table-row">
-                    <td className="table-cell font-mono font-semibold text-blue-400">{loc.id}</td>
-                    <td className="table-cell text-text-primary font-medium">{loc.name}</td>
-                    <td className="table-cell font-mono text-xs text-text-muted">{loc.lat.toFixed(4)}, {loc.lng.toFixed(4)}</td>
-                    <td className="table-cell text-text-primary">{loc.demand} kg</td>
+                    <td className="table-cell font-mono font-semibold" style={{ color: '#4B8FF5' }}>{loc.id}</td>
+                    <td className="table-cell font-medium" style={{ color: '#F0F6FF' }}>{loc.name}</td>
+                    <td className="table-cell font-mono text-xs" style={{ color: '#3A5570' }}>{loc.lat.toFixed(4)}, {loc.lng.toFixed(4)}</td>
+                    <td className="table-cell" style={{ color: '#F0F6FF' }}>{loc.demand} kg</td>
                     <td className="table-cell">
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${priorityColor(loc.priority)}`}>{loc.priority}</span>
                     </td>
-                    <td className="table-cell text-xs text-text-muted font-mono">
+                    <td className="table-cell text-xs font-mono" style={{ color: '#3A5570' }}>
                       {loc.timeWindow ? `${loc.timeWindow.start}–${loc.timeWindow.end}` : '—'}
                     </td>
                     <td className="table-cell">
                       <div className="flex gap-2">
                         <button onClick={() => handleEdit(loc)}
-                          className="p-1.5 rounded hover:bg-blue-900/30 text-text-muted hover:text-blue-400 transition-colors">
+                          className="p-1.5 rounded transition-colors" style={{ color: '#3A5570' }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(29,111,235,0.15)'; (e.currentTarget as HTMLButtonElement).style.color = '#4B8FF5'; }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.color = '#3A5570'; }}>
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button onClick={() => deleteLocation(loc.id)}
-                          className="p-1.5 rounded hover:bg-red-900/30 text-text-muted hover:text-red-400 transition-colors">
+                          className="p-1.5 rounded transition-colors" style={{ color: '#3A5570' }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.12)'; (e.currentTarget as HTMLButtonElement).style.color = '#EF4444'; }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.color = '#3A5570'; }}>
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -217,7 +226,7 @@ export default function Locations() {
       )}
 
       {deliveries.length === 0 && (
-        <div className="flex items-center gap-2 text-amber-400 text-sm">
+        <div className="flex items-center gap-2 text-sm" style={{ color: '#F5C518' }}>
           <AlertCircle className="w-4 h-4" />
           Please add at least one delivery location before optimization.
         </div>

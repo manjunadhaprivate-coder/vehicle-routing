@@ -79,7 +79,7 @@ export default function Vehicles() {
       {flashMsg && <div className="status-success px-4 py-2.5 rounded-lg text-sm">{flashMsg}</div>}
 
       {showForm && (
-        <div className="card border-quantum/40">
+        <div className="card" style={{ borderColor: 'rgba(245,197,24,0.3)' }}>
           <h3 className="section-header">{editingId ? 'Edit Vehicle' : 'Add New Vehicle'}</h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
@@ -142,9 +142,9 @@ export default function Vehicles() {
 
       {vehicles.length === 0 ? (
         <div className="card flex flex-col items-center justify-center py-16 text-center">
-          <Truck className="w-12 h-12 text-text-muted mb-4" />
-          <p className="text-text-secondary font-semibold">No vehicles added</p>
-          <p className="text-text-muted text-sm mt-1">Add a vehicle or load the demo fleet to get started.</p>
+          <Truck className="w-12 h-12 mb-4" style={{ color: '#3A5570' }} />
+          <p className="font-semibold" style={{ color: '#7FA0C0' }}>No vehicles added</p>
+          <p className="text-sm mt-1" style={{ color: '#3A5570' }}>Add a vehicle or load the demo fleet to get started.</p>
         </div>
       ) : (
         <div className="card p-0 overflow-hidden">
@@ -153,18 +153,22 @@ export default function Vehicles() {
               <thead>
                 <tr className="table-header">
                   {['ID', 'Type', 'Capacity', 'Fuel', 'Efficiency', 'Max Dist', 'Cost/km', 'Actions'].map(h => (
-                    <th key={h} className="table-cell text-left text-xs font-semibold text-text-muted uppercase tracking-wide">{h}</th>
+                    <th key={h} className="table-cell text-left text-xs font-semibold uppercase tracking-wide"
+                      style={{ color: '#3A5570' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {vehicles.map(v => (
                   <tr key={v.id} className="table-row">
-                    <td className="table-cell font-mono font-semibold text-quantum-hover">{v.id}</td>
+                    <td className="table-cell font-mono font-semibold" style={{ color: '#F5C518' }}>{v.id}</td>
                     <td className="table-cell">
-                      <span className="flex items-center gap-2">{vehicleTypeIcon(v.type)} <span className="text-text-primary">{v.type}</span></span>
+                      <span className="flex items-center gap-2">
+                        {vehicleTypeIcon(v.type)}
+                        <span style={{ color: '#F0F6FF' }}>{v.type}</span>
+                      </span>
                     </td>
-                    <td className="table-cell text-text-primary">{v.capacity} kg</td>
+                    <td className="table-cell" style={{ color: '#F0F6FF' }}>{v.capacity} kg</td>
                     <td className="table-cell"><span className={`text-xs font-medium ${fuelTypeColor(v.fuelType)}`}>{v.fuelType}</span></td>
                     <td className="table-cell">{v.efficiency} km/L</td>
                     <td className="table-cell">{v.maxDistance} km</td>
@@ -172,15 +176,24 @@ export default function Vehicles() {
                     <td className="table-cell">
                       <div className="flex gap-2">
                         <button onClick={() => handleEdit(v)}
-                          className="p-1.5 rounded hover:bg-blue-900/30 text-text-muted hover:text-blue-400 transition-colors">
+                          className="p-1.5 rounded transition-colors"
+                          style={{ color: '#3A5570' }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(29,111,235,0.15)'; (e.currentTarget as HTMLButtonElement).style.color = '#4B8FF5'; }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.color = '#3A5570'; }}>
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button onClick={() => handleDuplicate(v)}
-                          className="p-1.5 rounded hover:bg-purple-900/30 text-text-muted hover:text-quantum-hover transition-colors">
+                          className="p-1.5 rounded transition-colors"
+                          style={{ color: '#3A5570' }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(245,197,24,0.1)'; (e.currentTarget as HTMLButtonElement).style.color = '#F5C518'; }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.color = '#3A5570'; }}>
                           <Copy className="w-3.5 h-3.5" />
                         </button>
                         <button onClick={() => deleteVehicle(v.id)}
-                          className="p-1.5 rounded hover:bg-red-900/30 text-text-muted hover:text-red-400 transition-colors">
+                          className="p-1.5 rounded transition-colors"
+                          style={{ color: '#3A5570' }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.12)'; (e.currentTarget as HTMLButtonElement).style.color = '#EF4444'; }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.color = '#3A5570'; }}>
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -194,7 +207,7 @@ export default function Vehicles() {
       )}
 
       {vehicles.length === 0 && (
-        <div className="flex items-center gap-2 text-amber-400 text-sm">
+        <div className="flex items-center gap-2 text-sm" style={{ color: '#F5C518' }}>
           <AlertCircle className="w-4 h-4" />
           Please add at least one vehicle before starting optimization.
         </div>

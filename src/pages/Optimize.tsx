@@ -8,9 +8,9 @@ import type { OptimizationObjective } from '../types';
 
 const OBJECTIVES: { value: OptimizationObjective; label: string; desc: string }[] = [
   { value: 'distance', label: 'Minimum Distance', desc: 'Minimize total travel distance' },
-  { value: 'time', label: 'Minimum Time', desc: 'Minimize total travel time' },
-  { value: 'cost', label: 'Minimum Cost', desc: 'Minimize total transportation cost' },
-  { value: 'balanced', label: 'Balanced Optimization', desc: 'Balance all objectives equally' },
+  { value: 'time',     label: 'Minimum Time',     desc: 'Minimize total travel time' },
+  { value: 'cost',     label: 'Minimum Cost',     desc: 'Minimize total transportation cost' },
+  { value: 'balanced', label: 'Balanced',         desc: 'Balance all objectives equally' },
 ];
 
 export default function Optimize() {
@@ -39,11 +39,9 @@ export default function Optimize() {
       setValidationError('A depot location is required. Please mark one location as Depot.');
       return;
     }
-
     navigate('/simulation');
     setIsOptimizing(true);
     setOptimizationProgress(0, 0, 0, 0, 0);
-
     try {
       const baseline = solveBaseline(vehicles, locations, settings);
       const { routes: optimized, stats } = await runQuantumOptimizer(
@@ -73,14 +71,21 @@ export default function Optimize() {
           { label: 'Vehicles', count: vehicles.length, ok: vehicles.length > 0, path: '/vehicles' },
           { label: 'Delivery Locations', count: deliveries.length, ok: deliveries.length > 0, path: '/locations' },
         ].map(({ label, count, ok, path }) => (
-          <div key={label} className={`card border ${ok ? 'border-green-700/40' : 'border-amber-700/40'}`}>
+          <div key={label} className="card"
+            style={{ borderColor: ok ? 'rgba(16,185,129,0.35)' : 'rgba(245,197,24,0.35)' }}>
             <div className="flex items-center justify-between">
-              <span className="text-text-secondary text-sm">{label}</span>
-              {ok ? <CheckCircle className="w-4 h-4 text-traffic-free" /> : <AlertCircle className="w-4 h-4 text-traffic-moderate" />}
+              <span className="text-sm" style={{ color: '#7FA0C0' }}>{label}</span>
+              {ok
+                ? <CheckCircle className="w-4 h-4" style={{ color: '#10B981' }} />
+                : <AlertCircle className="w-4 h-4" style={{ color: '#F5C518' }} />}
             </div>
-            <p className="text-2xl font-bold text-text-primary mt-2">{count}</p>
+            <p className="text-2xl font-bold mt-2" style={{ color: '#F0F6FF' }}>{count}</p>
             {!ok && (
-              <button onClick={() => navigate(path)} className="text-xs text-quantum-hover hover:underline mt-2 flex items-center gap-1">
+              <button onClick={() => navigate(path)}
+                className="text-xs mt-2 flex items-center gap-1"
+                style={{ color: '#F5C518' }}
+                onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.textDecoration = 'underline'}
+                onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.textDecoration = 'none'}>
                 Add now <ArrowRight className="w-3 h-3" />
               </button>
             )}
@@ -90,15 +95,22 @@ export default function Optimize() {
 
       {/* Objective Selection */}
       <div className="card">
-        <h3 className="section-header flex items-center gap-2"><Settings2 className="w-4 h-4" /> Optimization Objective</h3>
+        <h3 className="section-header flex items-center gap-2">
+          <Settings2 className="w-4 h-4" /> Optimization Objective
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {OBJECTIVES.map(obj => (
             <button key={obj.value} onClick={() => updateSettings({ objective: obj.value })}
-              className={`text-left p-4 rounded-xl border transition-all duration-200 ${
-                settings.objective === obj.value
-                  ? 'bg-quantum/15 border-quantum/50 text-quantum-hover'
-                  : 'bg-bg-secondary border-border-default text-text-secondary hover:border-quantum/30'
-              }`}>
+              className="text-left p-4 rounded-xl transition-all duration-200"
+              style={settings.objective === obj.value ? {
+                background: 'rgba(245,197,24,0.1)',
+                border: '1px solid rgba(245,197,24,0.4)',
+                color: '#F5C518',
+              } : {
+                background: '#061222',
+                border: '1px solid #12293F',
+                color: '#7FA0C0',
+              }}>
               <p className="font-semibold text-sm">{obj.label}</p>
               <p className="text-xs mt-1 opacity-70">{obj.desc}</p>
             </button>
@@ -108,22 +120,25 @@ export default function Optimize() {
 
       {/* Weight Sliders */}
       <div className="card">
-        <h3 className="section-header flex items-center gap-2"><Cpu className="w-4 h-4" /> Objective Weights</h3>
+        <h3 className="section-header flex items-center gap-2">
+          <Cpu className="w-4 h-4" /> Objective Weights
+        </h3>
         <div className="space-y-4">
           {[
             { key: 'distanceWeight' as const, label: 'Distance Weight' },
-            { key: 'timeWeight' as const, label: 'Time Weight' },
-            { key: 'costWeight' as const, label: 'Cost Weight' },
+            { key: 'timeWeight' as const,     label: 'Time Weight' },
+            { key: 'costWeight' as const,     label: 'Cost Weight' },
           ].map(({ key, label }) => (
             <div key={key}>
               <div className="flex justify-between mb-2">
                 <label className="label mb-0">{label}</label>
-                <span className="text-text-primary text-sm font-mono">{settings[key].toFixed(2)}</span>
+                <span className="text-sm font-mono" style={{ color: '#F0F6FF' }}>{settings[key].toFixed(2)}</span>
               </div>
               <input type="range" min="0" max="1" step="0.05"
                 value={settings[key]}
                 onChange={e => updateSettings({ [key]: +e.target.value })}
-                className="w-full h-2 rounded-full appearance-none bg-bg-secondary accent-purple-500 cursor-pointer"
+                className="w-full h-2 rounded-full appearance-none cursor-pointer"
+                style={{ accentColor: '#F5C518', background: '#061222' }}
               />
             </div>
           ))}
@@ -136,21 +151,23 @@ export default function Optimize() {
         <div>
           <div className="flex justify-between mb-2">
             <label className="label mb-0">Max Iterations</label>
-            <span className="text-text-primary font-mono">{settings.maxIterations.toLocaleString()}</span>
+            <span className="font-mono" style={{ color: '#F0F6FF' }}>{settings.maxIterations.toLocaleString()}</span>
           </div>
           <input type="range" min="500" max="5000" step="500"
             value={settings.maxIterations}
             onChange={e => updateSettings({ maxIterations: +e.target.value })}
-            className="w-full h-2 rounded-full appearance-none bg-bg-secondary accent-purple-500 cursor-pointer"
+            className="w-full h-2 rounded-full appearance-none cursor-pointer"
+            style={{ accentColor: '#F5C518', background: '#061222' }}
           />
-          <div className="flex justify-between text-xs text-text-muted mt-1">
+          <div className="flex justify-between text-xs mt-1" style={{ color: '#3A5570' }}>
             <span>500 (fast)</span><span>5000 (thorough)</span>
           </div>
         </div>
       </div>
 
       {validationError && (
-        <div className="flex items-start gap-2 text-amber-400 bg-amber-900/20 border border-amber-700/40 rounded-xl p-4">
+        <div className="flex items-start gap-2 rounded-xl p-4"
+          style={{ color: '#F5C518', background: 'rgba(245,197,24,0.07)', border: '1px solid rgba(245,197,24,0.25)' }}>
           <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
           <p className="text-sm">{validationError}</p>
         </div>
@@ -159,22 +176,23 @@ export default function Optimize() {
       <button onClick={handleStartOptimization} disabled={isOptimizing}
         className="btn-primary w-full py-4 text-base flex items-center justify-center gap-3">
         {isOptimizing ? (
-          <><span className="animate-spin border-2 border-white/30 border-t-white rounded-full w-5 h-5" />Optimization Running...</>
+          <><span className="animate-spin border-2 rounded-full w-5 h-5"
+            style={{ borderColor: 'rgba(3,11,26,0.2)', borderTopColor: '#030B1A' }} />Optimization Running...</>
         ) : (
           <><Zap className="w-5 h-5" /> Start Quantum Optimization</>
         )}
       </button>
 
-      <div className="card bg-purple-900/10 border-purple-700/30">
+      <div className="card" style={{ background: 'rgba(245,197,24,0.04)', borderColor: 'rgba(245,197,24,0.2)' }}>
         <div className="flex items-start gap-3">
-          <Cpu className="w-5 h-5 text-quantum-hover flex-shrink-0 mt-0.5" />
+          <Cpu className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#F5C518' }} />
           <div>
-            <p className="text-sm font-semibold text-quantum-hover mb-1">About the Algorithm</p>
-            <p className="text-xs text-text-muted leading-relaxed">
+            <p className="text-sm font-semibold mb-1" style={{ color: '#F5C518' }}>About the Algorithm</p>
+            <p className="text-xs leading-relaxed" style={{ color: '#3A5570' }}>
               The system converts the VRP into a QUBO-inspired cost minimization problem and applies
               Simulated Annealing with quantum-inspired tunnelling. It uses 2-opt swaps and cross-route
               relocation operators.&nbsp;
-              <strong className="text-text-secondary">This is a quantum-inspired classical simulation</strong>
+              <strong style={{ color: '#7FA0C0' }}>This is a quantum-inspired classical simulation</strong>
               &nbsp;— not an actual quantum computer.
             </p>
           </div>

@@ -10,25 +10,17 @@ export default function Settings() {
   }));
   const [saved, setSaved] = useState(false);
 
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
-
-  const handleReset = () => {
-    updateSettings(defaultSettings);
-  };
+  const handleSave = () => { setSaved(true); setTimeout(() => setSaved(false), 2000); };
+  const handleReset = () => { updateSettings(defaultSettings); };
 
   const numField = (key: keyof typeof settings, label: string, min: number, max: number, step = 1, unit = '') => (
     <div key={key}>
-      <label className="label">{label}{unit && <span className="text-text-muted"> ({unit})</span>}</label>
+      <label className="label">{label}{unit && <span style={{ color: '#3A5570' }}> ({unit})</span>}</label>
       <input
         type="number"
         className="input-field"
         value={settings[key] as number}
-        min={min}
-        max={max}
-        step={step}
+        min={min} max={max} step={step}
         onChange={e => updateSettings({ [key]: +e.target.value })}
       />
     </div>
@@ -80,13 +72,14 @@ export default function Settings() {
             <div key={key}>
               <div className="flex justify-between mb-2">
                 <label className="label mb-0">{label}</label>
-                <span className="text-sm font-mono text-text-primary">{(settings[key] as number).toFixed(2)}</span>
+                <span className="text-sm font-mono" style={{ color: '#F0F6FF' }}>{(settings[key] as number).toFixed(2)}</span>
               </div>
               <input
                 type="range" min="0" max="1" step="0.05"
                 value={settings[key] as number}
                 onChange={e => updateSettings({ [key]: +e.target.value })}
-                className="w-full h-2 rounded-full appearance-none bg-bg-secondary accent-purple-500 cursor-pointer"
+                className="w-full h-2 rounded-full appearance-none cursor-pointer"
+                style={{ accentColor: '#F5C518', background: '#061222' }}
               />
             </div>
           ))}

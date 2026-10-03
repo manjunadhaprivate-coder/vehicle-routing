@@ -5,7 +5,7 @@ import { useAppStore } from '../store/appStore';
 import { formatKm, formatCost, formatTime, vehicleTypeIcon } from '../utils/formatters';
 import type { Route, Location, Vehicle } from '../types';
 
-const ROUTE_COLORS = ['#22C55E','#3B82F6','#A855F7','#F59E0B','#F97316','#06B6D4','#EF4444','#84CC16'];
+const ROUTE_COLORS = ['#F5C518','#10B981','#1D6FEB','#F97316','#06B6D4','#EF4444','#84CC16','#A855F7'];
 
 export default function RoutesPage() {
   const navigate = useNavigate();
@@ -30,9 +30,9 @@ export default function RoutesPage() {
   if (!optimizationResult) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center animate-fade-in">
-        <AlertCircle className="w-12 h-12 text-amber-400 mb-4" />
-        <p className="text-text-secondary font-semibold text-lg">No optimization results yet</p>
-        <p className="text-text-muted text-sm mt-2">Run the optimizer first to see computed routes.</p>
+        <AlertCircle className="w-12 h-12 mb-4" style={{ color: '#F5C518' }} />
+        <p className="font-semibold text-lg" style={{ color: '#7FA0C0' }}>No optimization results yet</p>
+        <p className="text-sm mt-2" style={{ color: '#3A5570' }}>Run the optimizer first to see computed routes.</p>
         <button onClick={() => navigate('/optimize')} className="btn-primary mt-6">Go to Optimizer</button>
       </div>
     );
@@ -51,13 +51,13 @@ export default function RoutesPage() {
           <div className="w-3 h-14 rounded-full flex-shrink-0" style={{ background: color }} />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="font-bold text-text-primary">{route.vehicleId}</span>
-              <span className="text-text-muted text-sm">{vehicleTypeIcon(vehicle?.type ?? '')} {vehicle?.type}</span>
+              <span className="font-bold" style={{ color: '#F0F6FF' }}>{route.vehicleId}</span>
+              <span className="text-sm" style={{ color: '#3A5570' }}>{vehicleTypeIcon(vehicle?.type ?? '')} {vehicle?.type}</span>
               <span className="status-success ml-auto text-xs hidden sm:flex">
                 <CheckCircle className="w-3 h-3 mr-1" /> Optimized
               </span>
             </div>
-            <div className="flex flex-wrap gap-3 text-xs text-text-muted">
+            <div className="flex flex-wrap gap-3 text-xs" style={{ color: '#3A5570' }}>
               <span>📍 {route.deliveries} deliveries</span>
               <span>📏 {formatKm(route.totalDistance)}</span>
               <span>⏱ {formatTime(route.totalTime)}</span>
@@ -65,19 +65,19 @@ export default function RoutesPage() {
               <span>📦 {route.loadUtilized} kg</span>
             </div>
             <div className="mt-2 flex items-center gap-2">
-              <div className="flex-1 h-1.5 rounded-full bg-bg-secondary overflow-hidden">
+              <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: '#061222' }}>
                 <div className="h-full rounded-full" style={{ width: `${route.efficiency}%`, background: color }} />
               </div>
-              <span className="text-xs text-text-muted">{route.efficiency.toFixed(0)}% efficient</span>
+              <span className="text-xs" style={{ color: '#3A5570' }}>{route.efficiency.toFixed(0)}% efficient</span>
             </div>
           </div>
           {isOpen
-            ? <ChevronDown className="w-4 h-4 text-text-muted flex-shrink-0" />
-            : <ChevronRight className="w-4 h-4 text-text-muted flex-shrink-0" />}
+            ? <ChevronDown className="w-4 h-4 flex-shrink-0" style={{ color: '#3A5570' }} />
+            : <ChevronRight className="w-4 h-4 flex-shrink-0" style={{ color: '#3A5570' }} />}
         </button>
 
         {isOpen && (
-          <div className="mt-4 pt-4 border-t border-border-default">
+          <div className="mt-4 pt-4" style={{ borderTop: '1px solid #12293F' }}>
             <div className="flex flex-col gap-1">
               {route.stops.map((stop, si) => {
                 const loc = locById(stop.locationId);
@@ -85,38 +85,41 @@ export default function RoutesPage() {
                 return (
                   <div key={si} className="flex items-start gap-3">
                     <div className="flex flex-col items-center flex-shrink-0">
-                      <div className={`w-3 h-3 rounded-full border-2 ${
-                        isDepot ? 'border-purple-400 bg-purple-900/50' : 'border-green-400 bg-green-900/50'
-                      }`} />
-                      {si < route.stops.length - 1 && <div className="w-0.5 h-6 bg-border-default" />}
+                      <div className="w-3 h-3 rounded-full border-2"
+                        style={isDepot
+                          ? { borderColor: '#F5C518', background: 'rgba(245,197,24,0.15)' }
+                          : { borderColor: '#10B981', background: 'rgba(16,185,129,0.15)' }} />
+                      {si < route.stops.length - 1 && (
+                        <div className="w-0.5 h-6" style={{ background: '#12293F' }} />
+                      )}
                     </div>
                     <div className="pb-4">
-                      <p className={`text-sm font-medium ${isDepot ? 'text-quantum-hover' : 'text-text-primary'}`}>
+                      <p className="text-sm font-medium"
+                        style={{ color: isDepot ? '#F5C518' : '#F0F6FF' }}>
                         {loc?.name ?? stop.locationId}
                         {isDepot && <span className="ml-2 quantum-badge">Depot</span>}
                       </p>
                       {loc && !isDepot && (
-                        <p className="text-xs text-text-muted">{loc.demand} kg · {loc.priority} priority</p>
+                        <p className="text-xs" style={{ color: '#3A5570' }}>{loc.demand} kg · {loc.priority} priority</p>
                       )}
                     </div>
                   </div>
                 );
               })}
             </div>
-            <div className="mt-4 pt-3 border-t border-border-default grid grid-cols-3 gap-3 text-center">
+            <div className="mt-4 pt-3 grid grid-cols-3 gap-3 text-center" style={{ borderTop: '1px solid #12293F' }}>
               {[
                 { label: 'Distance', value: formatKm(route.totalDistance) },
-                { label: 'Time', value: formatTime(route.totalTime) },
-                { label: 'Cost', value: formatCost(route.totalCost) },
+                { label: 'Time',     value: formatTime(route.totalTime) },
+                { label: 'Cost',     value: formatCost(route.totalCost) },
               ].map(({ label, value }) => (
-                <div key={label} className="bg-bg-secondary rounded-lg p-2">
-                  <p className="text-sm font-semibold text-text-primary">{value}</p>
-                  <p className="text-xs text-text-muted mt-0.5">{label}</p>
+                <div key={label} className="rounded-lg p-2" style={{ background: '#061222' }}>
+                  <p className="text-sm font-semibold" style={{ color: '#F0F6FF' }}>{value}</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#3A5570' }}>{label}</p>
                 </div>
               ))}
             </div>
-            <button onClick={() => navigate('/map')}
-              className="btn-blue text-sm flex items-center gap-2 mt-4">
+            <button onClick={() => navigate('/map')} className="btn-blue text-sm flex items-center gap-2 mt-4">
               <MapIcon className="w-4 h-4" /> View on Map
             </button>
           </div>
@@ -139,14 +142,14 @@ export default function RoutesPage() {
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: 'Active Vehicles', value: routes.length },
+          { label: 'Active Vehicles',  value: routes.length },
           { label: 'Total Deliveries', value: routes.reduce((s, r) => s + r.deliveries, 0) },
-          { label: 'Total Distance', value: formatKm(routes.reduce((s, r) => s + r.totalDistance, 0)) },
-          { label: 'Total Cost', value: formatCost(routes.reduce((s, r) => s + r.totalCost, 0)) },
+          { label: 'Total Distance',   value: formatKm(routes.reduce((s, r) => s + r.totalDistance, 0)) },
+          { label: 'Total Cost',       value: formatCost(routes.reduce((s, r) => s + r.totalCost, 0)) },
         ].map(({ label, value }) => (
           <div key={label} className="card">
-            <p className="text-xl font-bold text-text-primary">{value}</p>
-            <p className="text-xs text-text-muted mt-1">{label}</p>
+            <p className="text-xl font-bold" style={{ color: '#F0F6FF' }}>{value}</p>
+            <p className="text-xs mt-1" style={{ color: '#3A5570' }}>{label}</p>
           </div>
         ))}
       </div>
@@ -157,8 +160,8 @@ export default function RoutesPage() {
 
       {routes.length === 0 && (
         <div className="card flex flex-col items-center justify-center py-16 text-center">
-          <Truck className="w-12 h-12 text-text-muted mb-4" />
-          <p className="text-text-secondary font-medium">No routes generated</p>
+          <Truck className="w-12 h-12 mb-4" style={{ color: '#3A5570' }} />
+          <p className="font-medium" style={{ color: '#7FA0C0' }}>No routes generated</p>
         </div>
       )}
     </div>
